@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title></title>
+	<script type="text/javascript">
+    var EventUtil = {
+        addHandler: function(element, type, handler){
+            if (element.addEventListener){
+                element.addEventListener(type, handler, false);
+            } else if (element.attachEvent){
+                element.attachEvent("on" + type, handler);
+            } else {
+                element["on" + type] = handler;
+            }
+        }
+    };
+    window.onload=function(){
+        function Log(txt) {
+            document.getElementById("msg").innerHTML += txt + "<br/>";
+        }
+        function showTime() {
+            var datatime = new Date();
+            Log(datatime.toTimeString());
+        }
+
+        window.setInterval = function (callback, delay) {//传两个参数 一个是要重复执行的函数  一个是间隔时间
+
+            var obj = arguments.callee;//obj指向正被执行的函数
+            if (obj.timeout == undefined) {
+                obj.timeout = new Object();
+                obj.timeout.called = true;//只是自定义一个属性 表示可不可以被调用
+            }
+            function fn() {
+                if (obj.timeout.called){
+                    callback();
+                    setTimeout(arguments.callee, delay);//这里的arg.cal指向fn
+                }
+            }
+            fn();
+            return obj.timeout;
+        }
+
+        window.clearInterval = function (fn) {
+            fn.called = false;
+        }
+        var btn=document.getElementById("btn");
+        result = setInterval(showTime, 1000);
+        function btnClick() {
+            clearInterval(result);
+        }
+        EventUtil.addHandler(btn,"click",btnClick);
+    };
+	
+	</script>
+</head>
+<body>
+    <button type="submit" name="sub" id="btn">Stop</button>
+	<div id="msg"></div>
+
+</body>
+</html>
